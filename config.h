@@ -6,14 +6,14 @@ static const char *fonts[] = {"Hack Regular:size=11"};  /* -fn option overrides 
 /* colors */
 static const char col_grey[] = "#262626";
 static const char col_black[] = "#181818";
-static const char col_white[] = "#949494";
-static const char col_orange[] = "#eb7d00";
+static const char col_white[] = "#ebdbb2";
+static const char col_green[] = "#4b6e50";
 static const char *colors[SchemeLast][2] = {
 	/*                fg         bg       */
 	[SchemeNorm] = { col_white, col_grey },
-	[SchemeSel]  = { col_black, col_orange },
-	[SchemeOut]  = { col_black, "#00ffff" },
-	[SchemeHp]   = { col_orange, "#333333" }
+	[SchemeSel]  = { col_white, col_green },
+	[SchemeOut]  = { col_black, col_green },
+	[SchemeHp]   = { col_green, col_grey }
 };
 
 static unsigned int lines          = 0; /* -l option; if nonzero, dmenu uses vertical list with given number of lines */
