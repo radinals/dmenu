@@ -1,3 +1,4 @@
+/* clang-format off */
 /* See LICENSE file for copyright and license details. */
 /* Default settings; can be overriden by command line. */
 
@@ -22,3 +23,4 @@ static unsigned int columns      = 0;
  * for example: " /?\"&[]"
  */
 static const char worddelimiters[] = " ";
+/* clang-format on */
