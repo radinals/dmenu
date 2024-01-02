@@ -1,3 +1,6 @@
 *.o
 stest
 dmenu
+*.rej
+*.orig
+*.diff
