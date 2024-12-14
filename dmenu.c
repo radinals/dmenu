@@ -173,19 +173,29 @@ drawmenu(void)
 	drw_setscheme(drw, scheme[SchemeNorm]);
 	drw_rect(drw, 0, 0, mw, mh, 1, 1);
 
-	if (prompt && *prompt) {
-		drw_setscheme(drw, scheme[SchemeSel]);
-		x = drw_text(drw, x, 0, promptw, bh, lrpad / 2, prompt, 0);
-	}
-	/* draw input field */
-	w = (lines > 0 || !matches) ? mw - x : inputw;
-	drw_setscheme(drw, scheme[SchemeNorm]);
-	drw_text(drw, x, 0, w, bh, lrpad / 2, text, 0);
-
-	curpos = TEXTW(text) - TEXTW(&text[cursor]);
-	if ((curpos += lrpad / 2 - 1) < w) {
+	if (show_prompt) {
+		if (prompt && *prompt) {
+			drw_setscheme(drw, scheme[SchemeSel]);
+			x = drw_text(drw, x, 0, promptw, bh, lrpad / 2, prompt,
+			             0);
+		}
+		/* draw input field */
+		w = (lines > 0 || !matches) ? mw - x : inputw;
 		drw_setscheme(drw, scheme[SchemeNorm]);
-		drw_rect(drw, x + curpos, 2, 2, bh - 4, 1, 0);
+		drw_text(drw, x, 0, w, bh, lrpad / 2, text, 0);
+
+		curpos = TEXTW(text) - TEXTW(&text[cursor]);
+		if ((curpos += lrpad / 2 - 1) < w) {
+			drw_setscheme(drw, scheme[SchemeNorm]);
+			drw_rect(drw, x + curpos, 2, 2, bh - 4, 1, 0);
+		}
+	} else {
+		if (lines > 0 && prompt && *prompt) {
+			y = mh * prompt_input_separator_factor;
+			drw_setscheme(drw, scheme[SchemeSel]);
+			drw_text(drw, 0, 0, mw, bh, (mw / 2) - promptw, prompt,
+			         0);
+		}
 	}
 
 	if (lines > 0) {
@@ -198,7 +208,7 @@ drawmenu(void)
 
 	} else if (matches) {
 		/* draw horizontal list */
-		x += inputw;
+		x += (show_prompt) ? inputw : 0;
 		w = TEXTW("<");
 		if (curr->left) {
 			drw_setscheme(drw, scheme[SchemeNorm]);
@@ -896,23 +906,19 @@ main(int argc, char *argv[])
 		if (!strcmp(argv[i], "-v")) { /* prints version information */
 			puts("dmenu-" VERSION);
 			exit(0);
-		} else if (!strcmp(
-		               argv[i],
-		               "-b")) /* appears at the bottom of the screen */
+		} else if (!strcmp( argv[i], "-b")) /* appears at the bottom of the screen */
 			topbar = 0;
-		else if (!strcmp(
-		             argv[i],
-		             "-f")) /* grabs keyboard before reading stdin */
+		else if (!strcmp(argv[i], "-np"))
+			show_prompt = 0;
+		else if (!strcmp( argv[i], "-f")) /* grabs keyboard before reading stdin */
 			fast = 1;
-		else if (!strcmp(argv[i],
-		                 "-i")) { /* case-insensitive item matching */
+		else if (!strcmp(argv[i], "-i")) { /* case-insensitive item matching */
 			fstrncmp = strncasecmp;
 			fstrstr = cistrstr;
 		} else if (i + 1 == argc)
 			usage();
 		/* these options take one argument */
-		else if (!strcmp(argv[i],
-		                 "-g")) { /* number of columns in grid */
+		else if (!strcmp(argv[i], "-g")) { /* number of columns in grid */
 			columns = atoi(argv[++i]);
 			if (lines == 0)
 				lines = 1;
@@ -923,8 +929,7 @@ main(int argc, char *argv[])
 				columns = 1;
 		} else if (!strcmp(argv[i], "-m"))
 			mon = atoi(argv[++i]);
-		else if (!strcmp(argv[i],
-		                 "-p")) /* adds prompt to left of input field */
+		else if (!strcmp(argv[i], "-p")) /* adds prompt to left of input field */
 			prompt = argv[++i];
 		else if (!strcmp(argv[i], "-fn")) /* font or font set */
 			tempfonts = argv[++i];
