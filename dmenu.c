@@ -192,10 +192,8 @@ drawmenu(void)
 		}
 	} else {
 		if (lines > 0 && prompt && *prompt) {
-			y = mh * prompt_input_separator_factor;
 			drw_setscheme(drw, scheme[SchemeSel]);
-			drw_text(drw, 0, 0, mw, bh, (mw / 2) - promptw, prompt,
-			         0);
+			drw_text(drw, 0, 0, mw, bh * prompt_input_separator_factor, (mw / 2) - promptw, prompt, 0);
 		}
 	}
 

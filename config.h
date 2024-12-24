@@ -13,7 +13,7 @@ static const float menu_width_ratio = 2.0f;
 static const float menu_height_ratio = 2.0f;  /* This is the ratio used in the original calculation */
 static int border_width = 0;
 static int show_prompt = 1;
-static float prompt_input_separator_factor = 0.025f;
+static float prompt_input_separator_factor = 0.9f;
 
 static const char *prompt      = NULL;      /* -p  option; prompt to the left of input field */
 static const char *colors[SchemeLast][2] = {
