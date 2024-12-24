@@ -899,6 +899,9 @@ readxresources(void)
 			colors[SchemeSel][ColFg] =
 			    strdup(colors[SchemeSel][ColFg]);
 
+		if (XrmGetResource(xdb, "dmenu.prompt_separator_factor", "*", &type, &xval))
+			prompt_input_separator_factor = strtof(strdup(xval.addr),NULL);
+
 		XrmDestroyDatabase(xdb);
 	}
 }
