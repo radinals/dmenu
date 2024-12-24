@@ -47,6 +47,7 @@ static int bh, mw, mh;
 static int inputw = 0, promptw;
 static int lrpad; /* sum of left and right padding */
 static size_t cursor;
+static ssize_t itemsc = 0;
 static struct item *items = NULL;
 static struct item *matches, *matchend;
 static struct item *prev, *curr, *next, *sel;
@@ -201,10 +202,14 @@ drawmenu(void)
 	if (lines > 0) {
 		/* draw grid */
 		int i = 0;
-		for (item = curr; item != next; item = item->right, i++)
-			drawitem(item, x + ((i / lines) * ((mw - x) / columns)),
-			         y + (((i % lines) + 1) * bh),
-			         (mw - x) / columns);
+
+        /* dont truncate text if only a column is used */
+        int gridtexw = (itemsc > lines) ? (mw - x) / columns : (mw - x); 
+
+		for (item = curr; item != next; item = item->right, i++)  {
+            drawitem( item, x + ((i / lines) * ((mw - x) / columns)),
+                    y + (((i % lines) + 1) * bh), gridtexw);
+        }
 
 	} else if (matches) {
 		/* draw horizontal list */
@@ -661,6 +666,10 @@ readstdin(void)
 		items[i].text = NULL;
 
 	lines = MIN(lines, i);
+
+    /* save the item count */
+    itemsc = i;
+
 }
 
 static void
