@@ -9,7 +9,6 @@ static const char *fonts[] = {
 };
 
 static int centered = 0;                    /* -c option; centers dmenu on screen */
-static int min_width = 500;                    /* minimum width when centered */
 static const float menu_width_ratio = 2.0f;
 static const float menu_height_ratio = 2.0f;  /* This is the ratio used in the original calculation */
 static int border_width = 0;
