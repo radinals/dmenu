@@ -15,6 +15,10 @@ static int border_width = 0;
 static int show_prompt = 1;
 static float prompt_input_separator_factor = 0.9f;
 
+static float selborder_factor = 0.1f;
+static float lineheight_factor = 1.0f;
+static int selbordered = 0;
+
 static const char *prompt      = NULL;      /* -p  option; prompt to the left of input field */
 static const char *colors[SchemeLast][2] = {
 	/*     fg         bg       */

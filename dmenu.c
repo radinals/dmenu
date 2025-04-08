@@ -154,14 +154,26 @@ cistrstr(const char *h, const char *n)
 static int
 drawitem(struct item *item, int x, int y, int w)
 {
-	if (item == sel)
+    float bw = 0, bwoffset = 0;
+
+    if (selbordered && lines > 0)  {
+        bw = bh * selborder_factor;
+        bwoffset = bw + (float) lrpad/2;
+    }
+
+	if (item == sel) {
 		drw_setscheme(drw, scheme[SchemeSel]);
-	else if (item->out)
+        if (selbordered && lines > 0)
+            drw_rect(drw, x+lrpad/2, y + bw/2, w-(lrpad), bh, 1,0);
+	} else if (item->out)
 		drw_setscheme(drw, scheme[SchemeOut]);
 	else
 		drw_setscheme(drw, scheme[SchemeNorm]);
 
-	return drw_text(drw, x, y, w, bh, lrpad / 2, item->text, 0);
+	return drw_text(drw,
+            x + bwoffset, y + bw,
+            w - bwoffset * 2, bh - bw,
+            lrpad / 2, item->text, 0);
 }
 
 static void
@@ -205,6 +217,8 @@ drawmenu(void)
 
 		/* draw grid */
 		int i = 0;
+
+        y += bh/2;
 
 		for (item = curr; item != next; item = item->right, i++)  {
             drawitem( item, x + ((i / lines) * ((mw - x) / columns)),
@@ -744,9 +758,9 @@ setup(void)
 	utf8 = XInternAtom(dpy, "UTF8_STRING", False);
 
 	/* calculate menu geometry */
-	bh = drw->fonts->h + 2;
+	bh = (drw->fonts->h + 2) * ((lines > 0) ? (lineheight_factor) : 1);
 	lines = MAX(lines, 0);
-	mh = (lines + 1) * bh;
+	mh = (lines + 2) * bh;
 	promptw = (prompt && *prompt) ? TEXTW(prompt) - lrpad / 4 : 0;
 #ifdef XINERAMA
 	i = 0;
@@ -913,6 +927,19 @@ readxresources(void)
 
 		if (XrmGetResource(xdb, "dmenu.prompt_separator_factor", "*", &type, &xval))
 			prompt_input_separator_factor = strtof(strdup(xval.addr),NULL);
+
+		if (XrmGetResource(xdb, "dmenu.selborder_factor", "*", &type, &xval)) {
+			selborder_factor = strtof(strdup(xval.addr),NULL);
+            if (selborder_factor < 0) selborder_factor = 0;
+        }
+
+		if (XrmGetResource(xdb, "dmenu.lineheight_factor", "*", &type, &xval)) {
+			lineheight_factor = strtof(strdup(xval.addr),NULL);
+            if (lineheight_factor <= 0) lineheight_factor = 1.0f;
+        }
+
+		if (XrmGetResource(xdb, "dmenu.selbordered", "*", &type, &xval))
+			selbordered = atoi(strdup(xval.addr));
 
 		XrmDestroyDatabase(xdb);
 	}
