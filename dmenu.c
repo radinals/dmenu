@@ -474,6 +474,9 @@ keypress(XKeyEvent *ev)
 		}
 	} else if (ev->state & Mod1Mask) {
 		switch (ksym) {
+        case XK_p:
+            show_prompt = !show_prompt;
+            goto draw;
 		case XK_b:
 			movewordedge(-1);
 			goto draw;
