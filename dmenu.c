@@ -202,8 +202,8 @@ drawmenu(void)
 		int i = 0;
 
         /* dont truncate text if only a column is used */
-        int items = ((matchsc > 0) ? (matchsc) : (itemsc));
-        int gridtexw = ( items >= lines) ? (mw - x) / columns : (mw - x); 
+        int items = (matchsc > 0) ? (matchsc) : (itemsc);
+        int gridtexw = (items >= lines) ? (mw - x) / columns : (mw - x); 
 
 		for (item = curr; item != next; item = item->right, i++)  {
             drawitem( item, x + ((i / lines) * ((mw - x) / columns)),
