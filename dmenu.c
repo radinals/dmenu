@@ -47,7 +47,7 @@ static int bh, mw, mh;
 static int inputw = 0, promptw;
 static int lrpad; /* sum of left and right padding */
 static size_t cursor;
-static ssize_t itemsc = 0;
+static ssize_t itemsc = 0, matchsc = 0;
 static struct item *items = NULL;
 static struct item *matches, *matchend;
 static struct item *prev, *curr, *next, *sel;
@@ -202,7 +202,8 @@ drawmenu(void)
 		int i = 0;
 
         /* dont truncate text if only a column is used */
-        int gridtexw = (itemsc > lines) ? (mw - x) / columns : (mw - x); 
+        int items = ((matchsc > 0) ? (matchsc) : (itemsc));
+        int gridtexw = ( items >= lines) ? (mw - x) / columns : (mw - x); 
 
 		for (item = curr; item != next; item = item->right, i++)  {
             drawitem( item, x + ((i / lines) * ((mw - x) / columns)),
@@ -289,6 +290,8 @@ match(void)
 
 	matches = lprefix = lsubstr = matchend = prefixend = substrend = NULL;
 	textsize = strlen(text) + 1;
+    matchsc = 0;
+
 	for (item = items; item && item->text; item++) {
 		for (i = 0; i < tokc; i++)
 			if (!fstrstr(item->text, tokv[i]))
@@ -302,6 +305,7 @@ match(void)
 			appenditem(item, &lprefix, &prefixend);
 		else
 			appenditem(item, &lsubstr, &substrend);
+        matchsc++; // count matched items
 	}
 	if (lprefix) {
 		if (matches) {
