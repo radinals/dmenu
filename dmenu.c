@@ -437,6 +437,10 @@ keypress(XKeyEvent *ev)
 		case XK_u: /* delete left */
 			insert(NULL, 0 - cursor);
 			break;
+        case XK_space: /* delete all */
+            while(cursor > 0)
+                insert(NULL, nextrune(-1) - cursor);
+            break;
 		case XK_w: /* delete word */
 			while (cursor > 0 &&
 			       strchr(worddelimiters, text[nextrune(-1)]))
